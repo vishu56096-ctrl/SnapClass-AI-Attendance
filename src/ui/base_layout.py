@@ -27,7 +27,7 @@ def style_background_home():
 
 
 def style_background_dashboard():
-    st.markdown("""
+    st.html("""
       
         <style>
               
@@ -35,14 +35,32 @@ def style_background_dashboard():
                  background:#E0E3FF !important;
             }
 
+            .stApp h2{
+                 color: #15152E !important;
+            }
+
+            .stApp input{
+                 background-color: white !important;
+                 color: #15152E !important;
+            }
+
+            .stApp input::placeholder{
+                 color: #15152E !important;
+                 opacity: 1 !important;
+            }
+
+            .stApp [data-testid="stWidgetLabel"] p{
+                 color: #15152E !important;
+            }
+
         </style>
 
                     """
-                ,unsafe_allow_html=True)    
+        )
 
     
 def style_base_layout():
-    st.markdown("""
+    st.html("""
       
         <style>
               @import url('https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979&family=Outfit:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
@@ -110,4 +128,4 @@ def style_base_layout():
         </style>
 
                     """
-                ,unsafe_allow_html=True)
+        )
