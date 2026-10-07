@@ -146,6 +146,7 @@ def teacher_tab_take_attendance():
 
                 if not enrolled_students:
                     st.warning('No students in this course')
+                    return
                 else:
                     results, attendance_to_log = [],[]
                     current_timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")

@@ -8,6 +8,9 @@ import time
 def add_photos_dialog():
     st.write('Add classroom photos to scan for attendance')
 
+    if 'processed_photo_ids' not in st.session_state:
+        st.session_state.processed_photo_ids = set()
+
     if 'photo_tab' not in st.session_state:
         st.session_state.photo_tab = 'camera'
 
@@ -27,17 +30,20 @@ def add_photos_dialog():
 
     if st.session_state.photo_tab == 'camera' :
          cam_photo  = st.camera_input('Take Snapshot', key='dialog_cam') 
-         if cam_photo:
+         if cam_photo and cam_photo.file_id not in st.session_state.processed_photo_ids:
               st.session_state.attendance_images.append(Image.open(cam_photo))  
+              st.session_state.processed_photo_ids.add(cam_photo.file_id)
               st.toast('Photo Captured')
               st.rerun()
 
     if st.session_state.photo_tab == 'upload':
          uploaded_files = st.file_uploader('choose image files', type=['jpg', 'png', 'jpeg'], accept_multiple_files=True,key='dialog_upload ') 
 
-         if uploaded_files:
+         if uploaded_files and any(f.file_id not in st.session_state.processed_photo_ids for f in uploaded_files):
               for f in uploaded_files:
-                   st.session_state.attendance_images.append(Image.open(f))
+                   if f.file_id not in st.session_state.processed_photo_ids:
+                        st.session_state.attendance_images.append(Image.open(f))
+                        st.session_state.processed_photo_ids.add(f.file_id)
 
               st.toast('Photo Uploaded Successfully')
               st.rerun()
