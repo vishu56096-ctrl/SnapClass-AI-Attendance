@@ -318,8 +318,19 @@ def teacher_screen_login():
             st.rerun()
 
 def register_teacher(teacher_username, teacher_name, teacher_pass,teacher_pass_confirm):
-    if not teacher_username or not teacher_name or not teacher_pass or not teacher_pass_confirm:
-        return False,"All Fields are required!"
+    teacher_username = teacher_username.strip()
+    teacher_name = teacher_name.strip()
+    missing = []
+    if not teacher_username:
+        missing.append("username")
+    if not teacher_name:
+        missing.append("name")
+    if not teacher_pass:
+        missing.append("password")
+    if not teacher_pass_confirm:
+        missing.append("password confirmation")
+    if missing:
+        return False, "Please fill in: " + ", ".join(missing) + "."
     if teacher_pass != teacher_pass_confirm:
         return False , "Password doesn't match"
     try:
@@ -353,42 +364,23 @@ def teacher_screen_register():
     st.space()
     st.space()
 
-    teacher_username = st.text_input(
-            "Enter username",
-            placeholder="username",
-        )
+    with st.form("teacher_registration_form"):
+        teacher_username = st.text_input("Enter username", placeholder="username")
+        teacher_name = st.text_input("Enter name", placeholder="Your name")
+        teacher_pass = st.text_input("Enter Password", type="password", placeholder="Enter password")
+        teacher_pass_confirm = st.text_input("Confirm your Password", type="password", placeholder="Enter password")
+        st.divider()
+        register = st.form_submit_button("Register now", icon=":material/passkey:", width="stretch", type="primary")
 
-    teacher_name = st.text_input(
-        "Enter name",
-        placeholder="username",
-    )
-
-    teacher_pass = st.text_input(
-        "Enter Password",
-        type="password",
-        placeholder="Enter password",
-    )
-    teacher_pass_confirm = st.text_input(
-            "Confirm your Password",
-            type="password",
-            placeholder="Enter password",
-        )
-
-    st.divider()
-
-    login_column, register_column = st.columns(2)
-
-    with login_column:
-        if st.button("Register now", icon=":material/passkey:", width="stretch"):
-            success, message = register_teacher(teacher_username, teacher_name, teacher_pass,teacher_pass_confirm)
-            if success:
-                st.session_state["teacher_message"] = message
-                st.session_state["teacher_login_type"] = "login"
-                st.rerun()
-            else:
-                st.error(message)    
-
-    with register_column:
-        if st.button("Login", type="primary", icon=":material/passkey:", width="stretch"):
-            st.session_state.teacher_login_type = "login"
+    if register:
+        success, message = register_teacher(teacher_username, teacher_name, teacher_pass, teacher_pass_confirm)
+        if success:
+            st.session_state["teacher_message"] = message
+            st.session_state["teacher_login_type"] = "login"
             st.rerun()
+        else:
+            st.error(message)
+
+    if st.button("Login", icon=":material/passkey:", width="stretch", key="teacher_register_login"):
+        st.session_state.teacher_login_type = "login"
+        st.rerun()
